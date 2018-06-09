@@ -3,7 +3,7 @@
 %   Separates an image matrix into NxN blocks.
 %
 %   [imBlocks] = (imMatrix, blockParam)
-%       imMatrix: Chosen image in integer matrix form
+%       imMatrix: Chosen image in double matrix form
 %       imSize:   Image height or width
 %       N:        Parameter used to determine the size of the blocks
 %       imBlocks: Cell array that contains the image blocks
