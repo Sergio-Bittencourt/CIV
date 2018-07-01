@@ -1,4 +1,7 @@
 Image Database/
 Video Database/
 SabadoToolbox/
+VideoEncoder/SabadoToolbox
+VideoEncoder/VideoDatabase
+VideoEncoder/*.asv
 *.asv
