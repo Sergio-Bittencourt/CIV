@@ -32,5 +32,6 @@ imageQuantizDCT = cellfun(@(x) round(x/quantizMatrix), imageBlocksDCT, ...
     'UniformOutput', false);
 
 % Read all blocks using the zigzag algorithm.
-imageZigzag = cellfun(@runlengthcode, imageQuantizDCT);
+imageZigzag = cellfun(@runlengthcode, imageQuantizDCT, ...
+    'UniformOutput', false);
 end
