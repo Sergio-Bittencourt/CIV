@@ -14,7 +14,7 @@ imageMatrix = double(imread(imageFilename));
 imageBlocks = image2blocks(imageMatrix, imageSize);
 
 % Performs a DCT transform on all blocks.
-imageBlocksDCT = cellfun(@dct, imageBlocks, 'UniformOutput', false);
+imageBlocksDCT = cellfun(@dct2, imageBlocks, 'UniformOutput', false);
 
 % Define a standard quantization matrix (Pls dont kill me)
 % TEMPORARY SOLUTION CREATE BETTER QUANTIZATION LATER
@@ -28,7 +28,7 @@ quantizMatrix = [16 11 10 16 24 40 51 61;
                 72 92 95 98 112 100 103 99];
 
 % Quantize DCT coefficients in image blocks.
-imageQuantizDCT = cellfun(@(x) round(x/quantizMatrix), imageBlocksDCT, ...
+imageQuantizDCT = cellfun(@(x) round(x./quantizMatrix), imageBlocksDCT, ...
     'UniformOutput', false);
 
 % Read all blocks using the zigzag algorithm.
