@@ -5,3 +5,6 @@ VideoEncoder/SabadoToolbox
 VideoEncoder/VideoDatabase
 VideoEncoder/*.asv
 *.asv
+*.jpg
+*.bmp
+*.bin

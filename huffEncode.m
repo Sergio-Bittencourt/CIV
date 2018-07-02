@@ -1,4 +1,4 @@
-function codificadora= huffEncode(matrix, nome_arquivo)
+function codificadora= huffEncode(matrix, nome_arquivo, offset)
 
 %  nome_arquivo='Teste.txt';
 % % %% Abre o matrix 
@@ -44,7 +44,7 @@ while length(entradas_nb)>2
  entradas_nb(length(entradas_nb),:)=[];
  entradas_nb(length(entradas_nb),1)=cellstr(step);
  entradas_nb(length(entradas_nb),2)=num2cell(temp);
-entradas_nb=sortrows(entradas_nb, -2);
+ entradas_nb=sortrows(entradas_nb, -2);
 end
 
 
@@ -143,8 +143,11 @@ end
 
 nome_cabecalho=strrep(nome_arquivo,'.','_header.');
 cabecalho_id=fopen(nome_cabecalho,'wb','n','ISO-8859-1');
-count=fwrite(cabecalho_id, num2str(tamanho_bitstream), 'uint8');
+count=fwrite(cabecalho_id, [num2str(tamanho_bitstream) newline], 'uint8');
+count=fwrite(cabecalho_id, num2str(offset), 'uint8');
 count=fwrite(cabecalho_id, [char(10) buffer_tamanhos], 'uint8');
 
 %% Escreve o matrix com as informações do matrix codificado
-
+fclose(saida_id);
+fclose(cabecalho_id);
+end

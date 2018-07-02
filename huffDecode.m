@@ -1,4 +1,4 @@
-function decoder=Decoder(nome_do_arquivo)
+function [decoded_bitstream, offset] = huffDecode(nome_do_arquivo)
 
 nome_arquivo=strrep(nome_do_arquivo,'.','_comprimido.');
 arquivo_id=fopen(nome_arquivo, 'rb','n','ISO-8859-1');
@@ -10,6 +10,7 @@ fclose(arquivo_id);
 nome_cabecalho=strrep(nome_do_arquivo,'.','_header.');
 cabecalho_id=fopen(nome_cabecalho, 'rb');
 bits_enviados=fgetl(cabecalho_id);
+offset = fgetl(cabecalho_id);
 bits_por_simbolo=fgetl(cabecalho_id);
 bits_por_simbolo=strsplit(char(bits_por_simbolo), ',');
 bits_por_simbolo=str2num(char(bits_por_simbolo));
@@ -84,7 +85,8 @@ end
 
 %% Decodifica o texto por meio de sucessivas consultas à look-up table 
 
-decoder = texto_decodificado{1};
+decoded_bitstream = texto_decodificado{1};
+offset = offset;
 
 end
 

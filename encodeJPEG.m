@@ -9,6 +9,7 @@ function encodeJPEG(imageFilename)
 % dimensions.
 imageMatrix = double(imread(imageFilename));
 [imageSize, ~] = size(imageMatrix);
+[~, image_name, ~] = fileparts(imageFilename);
 
 % Separates imageMatrix into a cell array of 8x8 blocks.
 imageBlocks = image2blocks(imageMatrix, imageSize);
@@ -40,9 +41,11 @@ imageZigzag = cellfun(@runlengthcode, imageQuantizDCT, ...
 block_matrix = cell2mat(reshape(imageZigzag, [1, ...
     size(imageZigzag,1)*size(imageZigzag,2)]));
 
-block_matrix(block_matrix<0) = 0;
+% To counteract the negative number problem an offset is used.
+offset = abs(min(block_matrix));
+block_matrix = block_matrix + offset;
 
 % Applies huffman algorithm and encodes into a file.
-huffEncode(block_matrix, 'test.bin');
+huffEncode(block_matrix, strcat(image_name, '.bin'), offset);
 
 end
