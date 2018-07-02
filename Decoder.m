@@ -44,13 +44,13 @@ codigo=0;
 for i=1:length(tabela_bps)-1
     N_atual=cell2mat(tabela_bps(i, 2));
     N_next=cell2mat(tabela_bps(i+1,2));
-    codigo_fi=fi(codigo,0,N_atual,0);
-    tabela_bps(i,3)=cellstr(codigo_fi.bin);
+    codigo_fi=dec2bin(codigo, N_atual);
+    tabela_bps(i,3)=cellstr(codigo_fi);
     codigo=(codigo+1);
     codigo=codigo*2^(N_next-N_atual);
 end
-codigo_fi=fi(codigo,0,N_atual,0);
-tabela_bps(length(tabela_bps),3)=cellstr(codigo_fi.bin);
+codigo_fi=dec2bin(codigo,N_atual);
+tabela_bps(length(tabela_bps),3)=cellstr(codigo_fi);
 
 %% Resgata os códigos enviados por meio de processo análogo ao de codificação
 

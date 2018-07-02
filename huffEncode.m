@@ -1,11 +1,13 @@
-function codificadora= huffEncode(matrix)
-% matrix='TEncEntropy.txt';
+% function codificadora= huffEncode(matrix)
+
+ nome_arquivo='Teste.txt';
 % %% Abre o matrix 
-% matrix_id=fopen(matrix,'rb','n', 'ISO-8859-1');
-% matrix=fread(matrix_id, inf, 'uint8');
-% fclose(matrix_id);
+ matrix_id=fopen(nome_arquivo,'rb','n', 'ISO-8859-1');
+ matrix=fread(matrix_id, inf, 'uint8');
+ fclose(matrix_id);
 
 %% Lê do matrix
+
 N=length(matrix);
 elementos=unique(matrix);
 Frequencia = containers.Map;
@@ -90,13 +92,13 @@ codewords=containers.Map;
 for i=1:length(tamanho_vetor)-1
     N_atual=cell2mat(tamanho_vetor(i, 2));
     N_next=cell2mat(tamanho_vetor(i+1,2));
-    valor_codigo=fi(codigo, 0, N_atual,0);
-    codewords(char(tamanho_vetor(i,1)))=valor_codigo.bin;
+    valor_codigo=dec2bin(codigo, N_atual);
+    codewords(char(tamanho_vetor(i,1)))=valor_codigo;
     codigo=(codigo+1);
     codigo=codigo*2^(N_next-N_atual);
 end
-valor_codigo=fi(codigo,0,N_atual, 0);
-codewords(char(tamanho_vetor(length(tamanho_vetor), 1)))=valor_codigo.bin;
+valor_codigo=dec2bin(codigo, N_atual);
+codewords(char(tamanho_vetor(length(tamanho_vetor), 1)))=valor_codigo;
 
 %% Gera um código de Huffman Canônico para cada entrada
 
@@ -119,8 +121,9 @@ for i=1:8:8*byte_number
 end
     
 %% Separa o bitstream em conjuntos de 8 bits e converte seu valor para char
+keyboard;
 
-nome_saida=strrep(matrix, '.', '_comprimido.');
+nome_saida=strrep(nome_arquivo, '.', '_comprimido.');
 saida_id=fopen(nome_saida,'wb','n','ISO-8859-1');
 count=fwrite(saida_id, bitstream_saida, 'uint8');
 
@@ -140,11 +143,10 @@ end
 
 %% Gera o buffer de saída com o tamanho do código de cada símbolo (Huffman Canônico)
 
-nome_cabecalho=strrep(matrix,'.','_header.');
+nome_cabecalho=strrep(nome_arquivo,'.','_header.');
 cabecalho_id=fopen(nome_cabecalho,'wb','n','ISO-8859-1');
 count=fwrite(cabecalho_id, num2str(tamanho_bitstream), 'uint8');
 count=fwrite(cabecalho_id, [char(10) buffer_tamanhos], 'uint8');
 
 %% Escreve o matrix com as informações do matrix codificado
 
-end
