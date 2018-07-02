@@ -1,10 +1,10 @@
-% function codificadora= huffEncode(matrix)
+function codificadora= huffEncode(matrix, nome_arquivo)
 
- nome_arquivo='Teste.txt';
-% %% Abre o matrix 
- matrix_id=fopen(nome_arquivo,'rb','n', 'ISO-8859-1');
- matrix=fread(matrix_id, inf, 'uint8');
- fclose(matrix_id);
+%  nome_arquivo='Teste.txt';
+% % %% Abre o matrix 
+%  matrix_id=fopen(nome_arquivo,'rb','n', 'ISO-8859-1');
+%  matrix=fread(matrix_id, inf, 'uint8');
+%  fclose(matrix_id);
 
 %% Lê do matrix
 
@@ -121,8 +121,6 @@ for i=1:8:8*byte_number
 end
     
 %% Separa o bitstream em conjuntos de 8 bits e converte seu valor para char
-keyboard;
-
 nome_saida=strrep(nome_arquivo, '.', '_comprimido.');
 saida_id=fopen(nome_saida,'wb','n','ISO-8859-1');
 count=fwrite(saida_id, bitstream_saida, 'uint8');

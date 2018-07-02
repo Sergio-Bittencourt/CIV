@@ -1,4 +1,4 @@
-function decoder=decodifica(nome_do_arquivo)
+function decoder=Decoder(nome_do_arquivo)
 
 nome_arquivo=strrep(nome_do_arquivo,'.','_comprimido.');
 arquivo_id=fopen(nome_arquivo, 'rb','n','ISO-8859-1');
@@ -84,8 +84,12 @@ end
 
 %% Decodifica o texto por meio de sucessivas consultas à look-up table 
 
-nome_saida=strrep(nome_do_arquivo,'.','_descomprimido.');
-saida_id=fopen(nome_saida, 'wb','n','ISO-8859-1');
-count=fwrite(saida_id, char(texto_decodificado), 'uint8');
+decoder = texto_decodificado{1};
+
+end
+
+% nome_saida=strrep(nome_do_arquivo,'.','_descomprimido.');
+% saida_id=fopen(nome_saida, 'wb','n','ISO-8859-1');
+% count=fwrite(saida_id, char(texto_decodificado), 'uint8');
 
 %% Escreve o texto decodificado na saída

@@ -40,7 +40,9 @@ imageZigzag = cellfun(@runlengthcode, imageQuantizDCT, ...
 block_matrix = cell2mat(reshape(imageZigzag, [1, ...
     size(imageZigzag,1)*size(imageZigzag,2)]));
 
+block_matrix(block_matrix<0) = 0;
+
 % Applies huffman algorithm and encodes into a file.
-huffman(block_matrix);
+huffEncode(block_matrix, 'test.bin');
 
 end
