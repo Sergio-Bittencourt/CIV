@@ -34,4 +34,13 @@ imageQuantizDCT = cellfun(@(x) round(x./quantizMatrix), imageBlocksDCT, ...
 % Read all blocks using the zigzag algorithm.
 imageZigzag = cellfun(@runlengthcode, imageQuantizDCT, ...
     'UniformOutput', false);
+
+% Converts the cell blocks into one matrix for easier use with the
+% Huffman algorithm.
+block_matrix = cell2mat(reshape(imageZigzag, [1, ...
+    size(imageZigzag,1)*size(imageZigzag,2)]));
+
+% Applies huffman algorithm and encodes into a file.
+huffman(block_matrix);
+
 end

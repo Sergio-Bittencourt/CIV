@@ -1,17 +1,17 @@
-% function codificadora=codifica(nome_arquivo);
-nome_arquivo='TEncEntropy.txt';
-%% Abre o arquivo 
-arquivo_id=fopen(nome_arquivo,'rb','n', 'ISO-8859-1');
-arquivo=fread(arquivo_id, inf, 'uint8');
-fclose(arquivo_id);
+function codificadora= huffEncode(matrix)
+% matrix='TEncEntropy.txt';
+% %% Abre o matrix 
+% matrix_id=fopen(matrix,'rb','n', 'ISO-8859-1');
+% matrix=fread(matrix_id, inf, 'uint8');
+% fclose(matrix_id);
 
-%% Lê do arquivo
-N=length(arquivo);
-elementos=unique(arquivo);
+%% Lê do matrix
+N=length(matrix);
+elementos=unique(matrix);
 Frequencia = containers.Map;
 
 for i=1:length(elementos)
-    Frequencia(char(elementos(i)))=sum(arquivo==elementos(i));
+    Frequencia(char(elementos(i)))=sum(matrix==elementos(i));
 end
 
 %% Registra em um mapa quantas vezes cada símbolo aparece e com qual frequência 
@@ -100,7 +100,7 @@ codewords(char(tamanho_vetor(length(tamanho_vetor), 1)))=valor_codigo.bin;
 
 %% Gera um código de Huffman Canônico para cada entrada
 
-bitstream=encode(cell2mat(keys(codewords)), values(codewords), arquivo);
+bitstream=encode(cell2mat(keys(codewords)), values(codewords), matrix);
 tamanho_bitstream=length(bitstream);
 byte_number=ceil(tamanho_bitstream/8);
 extra_zeros=8*byte_number-tamanho_bitstream; 
@@ -120,11 +120,11 @@ end
     
 %% Separa o bitstream em conjuntos de 8 bits e converte seu valor para char
 
-nome_saida=strrep(nome_arquivo, '.', '_comprimido.');
+nome_saida=strrep(matrix, '.', '_comprimido.');
 saida_id=fopen(nome_saida,'wb','n','ISO-8859-1');
 count=fwrite(saida_id, bitstream_saida, 'uint8');
 
-%% Escreve totalmente o arquivo codificado
+%% Escreve totalmente o matrix codificado
 
 buffer_tamanhos='';
 for i=0:255
@@ -140,9 +140,11 @@ end
 
 %% Gera o buffer de saída com o tamanho do código de cada símbolo (Huffman Canônico)
 
-nome_cabecalho=strrep(nome_arquivo,'.','_header.');
+nome_cabecalho=strrep(matrix,'.','_header.');
 cabecalho_id=fopen(nome_cabecalho,'wb','n','ISO-8859-1');
 count=fwrite(cabecalho_id, num2str(tamanho_bitstream), 'uint8');
 count=fwrite(cabecalho_id, [char(10) buffer_tamanhos], 'uint8');
 
-%% Escreve o arquivo com as informações do arquivo codificado
+%% Escreve o matrix com as informações do matrix codificado
+
+end
