@@ -1,4 +1,4 @@
-[Y, U, V]  = readyuv('VideoDatabase/container_qcif_176x144_30.yuv',176,144,300);
+[Y, U, V]  = readyuv('VideoDatabase/news_qcif_176x144_30.yuv',176,144,300);
 
 macroblockLength = 8;
 
@@ -25,31 +25,31 @@ Ublocks = mat2cell(double(U), (macroblockLength/2)*ones(LumaSize(1)/macroblockLe
 Vblocks = mat2cell(double(V), (macroblockLength/2)*ones(LumaSize(1)/macroblockLength, 1).',  (macroblockLength/2)*ones(LumaSize(2)/macroblockLength, 1).', ones(NumberOfFrames,1)); 
 
 %% Used to track the data available in the decoder's input at the time of decoding, thus allowing a most accurate prevision of the Closest Movement Vector  
-FrameTrack = zeros(size(Y));
+FrameTrack = uint8(zeros(size(Y)));
 FrameTrack =  mat2cell(FrameTrack, macroblockLength*ones(LumaSize(1)/macroblockLength, 1).',  macroblockLength*ones(LumaSize(2)/macroblockLength, 1).', ones(NumberOfFrames,1)); 
 
 %% Inicializing the variables to store the Residue and the Closest Movement Vector of each block 
 
-ClosestMovementVector = zeros(macroblockLength, macroblockLength, NumberOfBlocks);
+ClosestMovementVector = zeros(LumaSize(1)/macroblockLength, LumaSize(2)/macroblockLength, NumberOfFrames);
 Residue = zeros(size(Y));
 Residue = mat2cell(Residue, macroblockLength*ones(LumaSize(1)/macroblockLength, 1).',  macroblockLength*ones(LumaSize(2)/macroblockLength, 1).', ones(NumberOfFrames,1)); 
 
 for k=1:NumberOfFrames
     PreviousFrame = FrameTrack(:,:,k); %% Loads the information available on decoder for the prevision
-    PreviousFrame = reshape(cell2mat(PreviousFrame), [macroblockLength, macroblockLength, NumberOfBlocks]);
+    PreviousFrame = uint8(reshape(cell2mat(PreviousFrame), [macroblockLength, macroblockLength, NumberOfBlocks]));
     c=1;
     for j=1:LumaSize(2)/macroblockLength
         for i=1:LumaSize(1)/macroblockLength
-            distortion=bsxfun(@minus, Yblocks{i,j,k}, PreviousFrame);
+            distortion=bsxfun(@minus, Yblocks{i,j,k}, double(PreviousFrame));
             distortion=distortion.^2;
             distortion = sum(sum(distortion));
             ClosestMV_Index = find(distortion==min(distortion),1);
             ClosestMovementVector(i,j,k) = ClosestMV_Index;
-            Residue{i,j,k} = Yblocks{i,j,k}-PreviousFrame(:,:,ClosestMV_Index);
-            TransformedResidue = dct(Residue{i,j,k});
-            QuantizedFrame = round(TransformedResidue/quantizMatrix);
-            ReconstructedFrame = QuantizedFrame*quantizMatrix;
-            FrameTrack{i,j,k+1} = idct(ReconstructedFrame) + PreviousFrame(ClosestMV_Index);
+            Residue{i,j,k} = Yblocks{i,j,k}-double(PreviousFrame(:,:,ClosestMV_Index));
+            TransformedResidue = dct2(Residue{i,j,k});
+            QuantizedFrame = round(TransformedResidue./quantizMatrix);
+            ReconstructedFrame = QuantizedFrame.*quantizMatrix;
+            FrameTrack{i,j,k+1} = uint8(idct2(ReconstructedFrame) + double(PreviousFrame(:,:,ClosestMV_Index)));
             c=c+1;
         end
     end
@@ -59,3 +59,5 @@ end
 %% P.S: We most elaborate a function that discards the null and negative 
 %% coefficients of quantized DCT and incorporate the zig-zag scan,
 %% as well evaluating the results we've got with the pair of quantization and reconstruction matrices
+
+
