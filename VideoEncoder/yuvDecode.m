@@ -1,4 +1,6 @@
-filename = 'VideoDatabase/foreman_qcif_174x144_30.yuv';
+function decode = yuvDecode(filename)
+
+% filename = 'VideoDatabase/Container 8x8/container_qcif_176x144_30.yuv';
 
 MovementVectorName = strrep(filename, '.yuv', '_info.bin');
 encodedYname = strrep(filename, '.yuv', '_y_encoded.bin');
@@ -34,24 +36,24 @@ MovementVector = reshape(MovementVector, [HeightVideo/macroblockLength, WidthVid
 
 %% Recovering Movement Vector
 
-% residuesOfYrle = huffDecode(encodedYname);
-file_id = fopen('Yrle.txt','r');
-residuesOfYrle = fread(file_id, [1,inf], 'char');
-residuesOfYrle = char(residuesOfYrle);
+ residuesOfYrle = huffDecode(encodedYname);
+% file_id = fopen('Yrle.txt','r');
+% residuesOfYrle = fread(file_id, [1,inf], 'char');
+% residuesOfYrle = char(residuesOfYrle);
 residuesOfYrle = strsplit(residuesOfYrle, ' ');
 residuesOfYrle = cellfun(@str2double, residuesOfYrle, 'UniformOutput', false);
 
-% residuesOfUrle = huffDecode(encodedUname);
-file_id = fopen('Urle.txt','r');
-residuesOfUrle = fread(file_id, [1,inf], 'char');
-residuesOfUrle = char(residuesOfUrle);
+ residuesOfUrle = huffDecode(encodedUname);
+% file_id = fopen('Urle.txt','r');
+% residuesOfUrle = fread(file_id, [1,inf], 'char');
+% residuesOfUrle = char(residuesOfUrle);
 residuesOfUrle = strsplit(residuesOfUrle, ' ');
 residuesOfUrle = cellfun(@str2double, residuesOfUrle, 'UniformOutput', false);
 
-% residuesOfVrle = huffDecode(encodedVname);
-file_id = fopen('Vrle.txt','r');
-residuesOfVrle = fread(file_id, [1,inf], 'char');
-residuesOfVrle = char(residuesOfVrle);
+residuesOfVrle = huffDecode(encodedVname);
+% file_id = fopen('Vrle.txt','r');
+% residuesOfVrle = fread(file_id, [1,inf], 'char');
+% residuesOfVrle = char(residuesOfVrle);
 residuesOfVrle = strsplit(residuesOfVrle, ' ');
 residuesOfVrle = cellfun(@str2double, residuesOfVrle, 'UniformOutput', false);
  
@@ -201,8 +203,15 @@ for k=1:NumberOfFrames
     end
 end
 
-keyboard;
-writeyuv('ForemanN.yuv', uint8(cell2mat(DecodedFrames)), cell2mat(DecodedU), cell2mat(DecodedV));
+
+blockSizeName = str(macroblockLength) + 'x' + str(macroblockLength);
+outputName = strrep(filename, '176x144_30', blockSizeName);
+
+
+writeyuv(outputName, uint8(cell2mat(DecodedFrames)), cell2mat(DecodedU), cell2mat(DecodedV));
+
+end
 
 
 
+ 

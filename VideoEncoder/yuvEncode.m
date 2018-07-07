@@ -1,4 +1,4 @@
-filename = 'VideoDatabase/foreman_qcif_174x144_30.yuv';
+filename = 'VideoDatabase/news_qcif_176x144_30.yuv';
 
 HeightVideo = 176;
 WidthVideo = 144;
@@ -6,7 +6,7 @@ NoF = 300;
 
 [Y, U, V]  = readyuv(filename,HeightVideo,WidthVideo,NoF);
 
-macroblockLength = 8;
+macroblockLength = 16;
 
 NumberOfFrames = size(Y,3);
 LumaSize = [size(Y,1) size(Y,2)];
@@ -15,22 +15,28 @@ NumberOfBlocks = (LumaSize(1)/macroblockLength)*(LumaSize(2)/macroblockLength);
 
 if macroblockLength==16
     
-    quantizMatrix = [7 7 7 7 7 7 8 8 9 9 10 11 12 13 14 15;
-                     7 7 7 7 7 8 8 9 9 10 11 1  2 13 14 15 17;
-                     7 7 7 7 8 8 9 9 10 11 12 13 14 15 17 18;
-                     7 7 7 8 8 9 9 10 11 12 13 14 15 17 18 20;
-                     7 7 8 8 9 9 10 11 12 13 14 15 17 18 20 22;
-                     7 8 8 9 9 10 11 12 13 14 15 17 18 20 22 24;
-                     8 8 9 9 10 11 12 13 14 15 17 18 20 22 24 26;
-                     8 9 9 10 11 12 13 14 15 17 18 20 22 24 26 28;
-                     9 9 10 11 12 13 14 15 17 18 20 22 24 26 28 30;
-                     9 10 11 12 13 14 15 17 18 20 22 24 26 28 30 33;
-                     10 11 12 13 14 15 17 18 20 22 24 26 28 30 33 36;
-                     11 12 13 14 15 17 18 20 22 24 26 28 30 33 36 39;
-                     12 13 14 15 17 18 20 22 24 26 28 30 33 36 39 42;
-                     13 14 15 17 18 20 22 24 26 28 30 33 36 39 42 45;
-                     14 15 17 18 20 22 24 26 28 30 33 36 39 42 45 49;
-                     15 17 18 20 22 24 26 28 30 33 36 39 42 45 49 52;];
+    quantizMatrix =    [    32    22    20    32    48    80   102   122   32    22    20    32    48    80   102   122;
+                            24    24    28    38    52   116   120   110   24    24    28    38    52   116   120   110;
+                            28    26    32    48    80   114   138   112   28    26    32    48    80   114   138   112;
+                            28    34    44    58   102   174   160   124   28    34    44    58   102   174   160   124;
+                            36    44    74   112   136   218   206   154   36    44    74   112   136   218   206   154;
+                            48    70   110   128   162   208   226   184   48    70   110   128   162   208   226   184;
+                            98   128   156   174   206   242   240   202   98   128   156   174   206   242   240   202;
+                           144   184   190   196   224   200   206   198   144   184   190   196   224   200   206   198;
+                            32    22    20    32    48    80   102   122   32    22    20    32    48    80   102   122;
+                            24    24    28    38    52   116   120   110   24    24    28    38    52   116   120   110;
+                            28    26    32    48    80   114   138   112   28    26    32    48    80   114   138   112;
+                            28    34    44    58   102   174   160   124   28    34    44    58   102   174   160   124;
+                            36    44    74   112   136   218   206   154   36    44    74   112   136   218   206   154;
+                            48    70   110   128   162   208   226   184   48    70   110   128   162   208   226   184;
+                            98   128   156   174   206   242   240   202   98   128   156   174   206   242   240   202;
+                           144   184   190   196   224   200   206   198   144   184   190   196   224   200   206   198;];
+                 
+                      
+                     
+                     
+                    
+
             
  chromaQuantizMatrix = [17	18	24	47	99	99	99	99;
                         18	21	26	66	99	99	99	99;
@@ -42,13 +48,13 @@ if macroblockLength==16
                         99	99	99	99	99	99	99	99;];                
 else
     quantizMatrix = [16 11 10 16 24 40 51 61; 
-                    12 12 14 19 26 58 60 55;
-                    14 13 16 24 40 57 69 56; 
-                    14 17 22 29 51 87 80 62;
-                    18 22 37 56 68 109 103 77;
-                    24 35 55 64 81 104 113 92;
-                    49 64 78 87 103 121 120 101;
-                    72 92 95 98 112 100 103 99];
+                     12 12 14 19 26 58 60 55;
+                     14 13 16 24 40 57 69 56; 
+                     14 17 22 29 51 87 80 62;
+                     18 22 37 56 68 109 103 77;
+                     24 35 55 64 81 104 113 92;
+                     49 64 78 87 103 121 120 101;
+                     72 92 95 98 112 100 103 99];
             
      chromaQuantizMatrix = [17 18 24 47;
                             18 21 26 66;
@@ -110,7 +116,7 @@ for k=1:NumberOfFrames
             TransformedResidue = dct2(ResidueU{i,j,k}-128);
             QuantizedCoeficientsU{i,j,k} = round(TransformedResidue./chromaQuantizMatrix);
             ReconstructedFrame = QuantizedCoeficientsU{i,j,k}.*chromaQuantizMatrix;
-            Utrack{i,j,k+1} = uint8(idct2(ReconstructedFrame) + double(PreviousV(:,:,ClosestMV_Index)))+128;
+            Utrack{i,j,k+1} = uint8(idct2(ReconstructedFrame) + double(PreviousU(:,:,ClosestMV_Index)))+128;
             ResidueV{i,j,k} = Vblocks{i,j,k}-double(PreviousV(:,:,ClosestMV_Index));
             TransformedResidue = dct2(ResidueV{i,j,k}-128); 
             QuantizedCoeficientsV{i,j,k} = round(TransformedResidue./chromaQuantizMatrix);
@@ -125,28 +131,24 @@ end
 Utrack = Utrack(:,:,2:end);
 Vtrack = Vtrack(:,:,2:end);
 FrameTrack = FrameTrack(:,:,2:end);
-keyboard;
 % writeyuv('ForemanX.yuv',uint8(cell2mat(FrameTrack)), uint8(cell2mat(Utrack)), uint8(cell2mat(Vtrack)));
 
 MovementVector = ClosestMovementVector(:).';
 MVBits = floor(log2(max(MovementVector)))+1;
 ClosestMovementVector = arrayfun(@(x) dec2bin(x, MVBits),  ClosestMovementVector, 'UniformOutput', false);
+ExtraZeros = zeros(1, 8*ceil(length(MovementVector)/8)-length(MovementVector));
+MovementVector = cell2mat(ClosestMovementVector(:).');
 
 for i=1:8*ceil(length(MovementVector)/8)-length(MovementVector)
-    MovementVector{end+1}=num2str(0);
+    MovementVector(end+1)=num2str(0);
 end
 
-
-MovementVector = cell2mat(ClosestMovementVector(:).');
 c=1;
 output_bitstream = blanks(ceil(length(MovementVector)/8));
  for i=1:8:8*ceil(length(MovementVector)/8)
     output_bitstream(c)=bin2dec(MovementVector(i:i+7));
     c=c+1;
  end
-
-
-
 
 name_infofile = strrep(filename, '.yuv', '_info.bin');
 infoFile = fopen(name_infofile, 'w'); %% Cleans the file, if has something written on it
@@ -190,7 +192,6 @@ Yrle = cellfun(@runlengthcode, QuantizedCoeficients, 'UniformOutput', false);
 Yrle = cellfun(@num2str, Yrle, 'UniformOutput', false);
 Yrle = strjoin(Yrle);
 huffEncode(Yrle, strrep(filename, '.yuv', '_y_Encoded.bin'),0);
-keyboard;
    
 fclose('all');
-
+keyboard;
